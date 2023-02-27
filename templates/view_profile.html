@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div id="message"></div>
+<script>
+let page_reloaded = false;
+
+window.addEventListener('load', function() {
+    executeFetch()
+    setInterval(executeFetch, 5000);
+});
+
+function executeFetch() {
+    fetch('/check-availabality')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.text()
+      })
+      .then((text) => {
+        let message = "Robot is "
+        if (text == "available") {
+            text += ": <a href='./profile' style='color:blue'>Click here</a>"
+        }
+        document.getElementById("message").innerHTML = message + text;
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+</script>
+
+<h4>Hello {{ current_user.name }}</h4>
+
+
+{% endblock %}

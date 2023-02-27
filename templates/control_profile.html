@@ -1,0 +1,47 @@
+<!-- templates/control_profile.html -->
+
+{% extends "base.html" %}
+{% block content %}
+
+<h4>Hello {{ current_user.name }}</h4>
+<div id="speed-display">Current speed: 10000</div>
+
+<script>
+    var is_pressed = false
+    var speed = 10000
+    document.addEventListener("keydown", function(event) {
+        if (event.code === "KeyW" && !is_pressed) {
+            fetch("/forward/" + speed);
+            is_pressed = true;
+        } else if (event.code === "KeyS" && !is_pressed) {
+            fetch("/backward/" + speed);
+            is_pressed = true;
+        } else if (event.code === "KeyA" && !is_pressed) {
+            fetch("/left/" + speed);
+            is_pressed = true;
+        } else if (event.code === "KeyD" && !is_pressed) {
+            fetch("/right/" + speed)
+            is_pressed = true;
+        } if (event.code === "NumpadAdd" && !is_pressed) {
+            speed = Math.min(10000, speed + 2500);
+            document.getElementById("speed-display").innerHTML = "Current speed: " + speed;
+            is_pressed = true;
+        } else if (event.code === "NumpadSubtract" && !is_pressed) {
+            speed = Math.max(0, speed - 2500);
+            document.getElementById("speed-display").innerHTML = "Current speed: " + speed;
+            is_pressed = true;
+        }
+    })
+
+        document.addEventListener("keyup", function(event) {
+          if (event.code === "KeyW" || event.code === "KeyA" || event.code === "KeyS" || event.code === "KeyD") {
+            fetch("/stop")
+            is_pressed = false;
+          } else if (event.code === "NumpadAdd" || event.code === "NumpadSubtract") {
+                is_pressed = false
+          }
+    })
+</script>
+
+
+{% endblock %}
